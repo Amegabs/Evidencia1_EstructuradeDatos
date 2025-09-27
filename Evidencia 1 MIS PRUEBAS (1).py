@@ -34,7 +34,7 @@ def pedir_cupo():
         else:
             print("ERROR, INGRESA EL NUMERO DE CUPO CORRECTAMENTE. SOLO NUMEROS.")
 
-
+#me when:
 def registrar_reservacion():
     """Funcion que registrara una nueva reservacion en alguna sala disponible"""
 try:
@@ -266,5 +266,6 @@ if __name__ == "__main__":
     ) = main(
         Reservaciones, clave_reservaciones, Clientes, clave_clientes, Salas, clave_salas
     )
+
 
 
