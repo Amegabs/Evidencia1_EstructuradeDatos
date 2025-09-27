@@ -61,13 +61,6 @@ try:
                 except ValueError:
                     print("Debe ingresar un numero valido.")
                     return Reservaciones, clave_reservaciones
-            #pruebas de valores
-
-
-
-
-
-
             #Salas
             print("\nSalas Registradas:")
             for ID_Salas, datos in Salas.items():
@@ -102,7 +95,7 @@ try:
                 print("Turno invalido")
                 return Reservaciones, clave_reservaciones
             
-            #checar
+            #revisión
             Reservaciones[clave_reservaciones] = {
                 "Cliente": ID_Cliente,
                 "Sala": ID_Salas,
@@ -273,4 +266,5 @@ if __name__ == "__main__":
     ) = main(
         Reservaciones, clave_reservaciones, Clientes, clave_clientes, Salas, clave_salas
     )
+
 
