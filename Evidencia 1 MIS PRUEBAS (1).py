@@ -37,6 +37,91 @@ def pedir_cupo():
 
 def registrar_reservacion():
     """Funcion que registrara una nueva reservacion en alguna sala disponible"""
+try:
+            if not Clientes:
+                print("Primero debe registrar clientes.")
+                return Reservaciones, clave_reservaciones
+            if not Salas:
+                print("Primero debe registrar salas.")
+                return Reservaciones, clave_reservaciones
+            
+            #clientes
+            print("\nClientes Registrados:")
+            for ID_Cliente, datos in Clientes.items():
+                print(f"{ID_Cliente}. {datos[0]} {datos[1]}")
+
+            while True:
+                ID_Cliente = int(input("Ingrese la Clave del Cliente:  [Presione ENTER para cancelar]"))
+                try:
+                    ID_Cliente = int(input("Ingrese la clave del cliente: "))
+                    if ID_Cliente not in Clientes:
+                        print("Cliente no encontrado. Intente de nuevo")
+                        continue
+                    break
+                except ValueError:
+                    print("Debe ingresar un numero valido.")
+                    return Reservaciones, clave_reservaciones
+            #pruebas de valores
+
+
+
+
+
+
+            #Salas
+            print("\nSalas Registradas:")
+            for ID_Salas, datos in Salas.items():
+                print(f"{ID_Salas}. {datos[0]} {datos[1]}")
+            try:
+                ID_Salas = int(input("Ingrese la clave de la Sala: "))
+            except ValueError:
+                print("Debe ingresar un Numero valido.")
+                return Reservaciones, clave_reservaciones
+            while True:
+                if ID_Salas not in Salas:
+                    print("Sala no encontrada / no existente.")
+                    continue
+                break
+            
+            #fechas
+            Fecha_STR = input("Ingrese la Fecha del evento: (DD-MM-AAAA)")
+            try:
+                Hoy = datetime.date.today()
+                FechaEvento = datetime.datetime.strptime(Fecha_STR, "%d-%m-%Y").date()
+                FechaAnticipada = (FechaEvento - Hoy).days
+
+                if FechaAnticipada < 2:
+                    print("La reservacion debe ser Mayor a 2 dias con Anticipacion")
+                    return Reservaciones, clave_reservaciones
+            except ValueError:
+                    print("Formato de fecha Incorrecto, use DD-MM-AAAA")
+                    return Reservaciones, clave_reservaciones
+
+            Turno = input("Que turno desea? (Mañana/Tarde/Noche): ").lower().strip()
+            if Turno not in ["mañana", "tarde", "noche"]:
+                print("Turno invalido")
+                return Reservaciones, clave_reservaciones
+            
+            #checar
+            Reservaciones[clave_reservaciones] = {
+                "Cliente": ID_Cliente,
+                "Sala": ID_Salas,
+                "Fecha":FechaEvento,
+                "Turno":Turno,
+            }
+            print(f"Reserva realizada con exito con una clave de: {clave_reservaciones}")
+            clave_reservaciones += 1
+
+            #Validar que no se sobrepongan las fechas...
+            for Reserva in Reservaciones.values():
+                if Reserva["Sala"] == ID_Salas and Reserva["Fecha"] == FechaEvento and Reserva["Turno"] == Turno:
+                    print("Esta Sala ya esta reservada en esta Fecha y Turno")
+                    return Reservaciones, clave_reservaciones
+
+
+    except Exception as Error:
+            print("Ocurrio un error inesperado. {Error}")
+    return Reservaciones, clave_reservaciones
 
 
 def editar_reservacion():
@@ -188,3 +273,4 @@ if __name__ == "__main__":
     ) = main(
         Reservaciones, clave_reservaciones, Clientes, clave_clientes, Salas, clave_salas
     )
+
