@@ -1,7 +1,9 @@
+import datetime
+
 def pedir_nombres():
     """Funcion que pide el nombre"""
     while True:
-        nombre = input("Nombre(s): ").strip()
+        nombre = input("Nombre(s): ")
         if nombre == "":
             return None
         if nombre.replace(" ", "").isalpha():
@@ -12,7 +14,7 @@ def pedir_nombres():
 def pedir_apellidos():
     """Funcion que pide el apellido"""
     while True:
-        apellido = input("Apellido(s): ").strip()
+        apellido = input("Apellido(s): ")
         if apellido == "":
             return None
         if apellido.replace(" ", "").isalpha():
@@ -21,23 +23,20 @@ def pedir_apellidos():
 
 
 def pedir_cupo():
-    """Funcion que pide el cupo de las salas"""
+    """Funcion que pide el numero de telefono"""
     while True:
-        cupo = input("Cupo de la sala: ").strip()
+        cupo = input("Cupo de la sala: ")
         if cupo == "":
             return None
         if cupo.isdigit():
-            valor = int(cupo)
-            if valor > 0:
-                return cupo
-            print("ERROR, el cupo debe ser mayor a 0.")
-        else:
-            print("ERROR, INGRESA EL NUMERO DE CUPO CORRECTAMENTE. SOLO NUMEROS.")
+            return cupo
+        print("ERROR, INGRESA EL TELEFONO CORRECTAMENTE. SOLO NUMEROS.")
 
-#me when:
-def registrar_reservacion():
+
+#yo el master meiker:
+def registrar_reservacion(Reservaciones, clave_reservaciones, Clientes, Salas):
     """Funcion que registrara una nueva reservacion en alguna sala disponible"""
-try:
+    try:
             if not Clientes:
                 print("Primero debe registrar clientes.")
                 return Reservaciones, clave_reservaciones
@@ -51,30 +50,44 @@ try:
                 print(f"{ID_Cliente}. {datos[0]} {datos[1]}")
 
             while True:
-                ID_Cliente = int(input("Ingrese la Clave del Cliente:  [Presione ENTER para cancelar]"))
-                try:
-                    ID_Cliente = int(input("Ingrese la clave del cliente: "))
-                    if ID_Cliente not in Clientes:
-                        print("Cliente no encontrado. Intente de nuevo")
-                        continue
-                    break
-                except ValueError:
-                    print("Debe ingresar un numero valido.")
+                Entrada = input("Ingrese la Clave del Cliente [ENTER para cancelar]:").strip()
+                if Entrada == "":
+                    print("Operacion Cancelada...")
                     return Reservaciones, clave_reservaciones
+                
+                try:
+                    ID_Cliente = int(Entrada)
+                except ValueError:
+                    print("Debe ingresar un numero valido")
+                    continue
+                if ID_Cliente not in Clientes:
+                    print("Cliente no encontrado. Intente de nuevo")
+                    continue
+                break
+            #pruebas de valores
+
+
+
+
             #Salas
             print("\nSalas Registradas:")
             for ID_Salas, datos in Salas.items():
-                print(f"{ID_Salas}. {datos[0]} {datos[1]}")
-            try:
-                ID_Salas = int(input("Ingrese la clave de la Sala: "))
-            except ValueError:
-                print("Debe ingresar un Numero valido.")
-                return Reservaciones, clave_reservaciones
+                print(f"{ID_Salas}. {datos[0]} (Cupo: {datos[1]})")
+
             while True:
-                if ID_Salas not in Salas:
-                    print("Sala no encontrada / no existente.")
-                    continue
-                break
+                Entrada = input("Ingrese la clave de la sala (ENTER para cancelar): ").strip()
+                if Entrada == "":
+                    print("Operación cancelada.")
+                    return Reservaciones, clave_reservaciones
+                try:
+                    ID_Salas = int(Entrada)
+                    if ID_Salas not in Salas:
+                        print("Sala no encontrada. Intente de nuevo.")
+                        continue
+                    break
+                except ValueError:
+                    print("Debe ingresar un Numero valido")
+
             
             #fechas
             Fecha_STR = input("Ingrese la Fecha del evento: (DD-MM-AAAA)")
@@ -90,33 +103,46 @@ try:
                     print("Formato de fecha Incorrecto, use DD-MM-AAAA")
                     return Reservaciones, clave_reservaciones
 
-            Turno = input("Que turno desea? (Mañana/Tarde/Noche): ").lower().strip()
-            if Turno not in ["mañana", "tarde", "noche"]:
+            Turno = input("Que turno desea? (Matutino/Vespertino/Nocturno): ").lower().strip()
+            if Turno not in ["matutino", "vespertino", "nocturno"]:
                 print("Turno invalido")
                 return Reservaciones, clave_reservaciones
             
-            #revisión
-            Reservaciones[clave_reservaciones] = {
-                "Cliente": ID_Cliente,
-                "Sala": ID_Salas,
-                "Fecha":FechaEvento,
-                "Turno":Turno,
-            }
-            print(f"Reserva realizada con exito con una clave de: {clave_reservaciones}")
-            clave_reservaciones += 1
+            #Name???
+            while True:
+                NombreEvento = input("Ingrese el Nombre de su Evento: ").strip()
+                if NombreEvento == "":
+                    print("Este registro no se puede quedar en Blanco, vuelva a intentarlo.")
+                    continue
+                else:
+                    break
 
             #Validar que no se sobrepongan las fechas...
             for Reserva in Reservaciones.values():
                 if Reserva["Sala"] == ID_Salas and Reserva["Fecha"] == FechaEvento and Reserva["Turno"] == Turno:
                     print("Esta Sala ya esta reservada en esta Fecha y Turno")
                     return Reservaciones, clave_reservaciones
-
+            
+            #checar
+            Reservaciones[clave_reservaciones] = {
+                "Cliente": ID_Cliente,
+                "Sala": ID_Salas,
+                "Fecha":FechaEvento,
+                "Turno":Turno,
+                "Evento": NombreEvento
+            }
+            print(f"Reserva realizada con exito con una clave de: {clave_reservaciones}")
+            clave_reservaciones += 1
+            return Reservaciones, clave_reservaciones
 
     except Exception as Error:
-            print("Ocurrio un error inesperado. {Error}")
-    return Reservaciones, clave_reservaciones
+        print(f"Ocurrio un error inesperado: {Error}")
+        return Reservaciones, clave_reservaciones
 
 
+
+
+#gabs
 def editar_reservacion():
     """Funcion que editara el nombre de la reservacion seleccionada por un rango de fechas"""
     if not Reservaciones:
@@ -161,7 +187,7 @@ def editar_reservacion():
         print("Error en el formato de fechas, use DD-MM-AAAA.")
 
     return Reservaciones
-
+#gabs
 def consultar_reservacion():
     """Funcion que consultara las reservaciones existentes para una fecha especifica"""
     if not Reservaciones:
@@ -173,27 +199,30 @@ def consultar_reservacion():
         fecha = datetime.datetime.strptime(fecha_str, "%d-%m-%Y").date()
 
         print(f"\nReservaciones para la fecha {fecha}:")
-        print("{:<10} {:<10} {:<10} {:<12} {:<10} {:<15}".format(
+        print("{:<10} {:<20} {:<20} {:<12} {:<10} {:<15}".format(
             "Clave", "Cliente", "Sala", "Fecha", "Turno", "Evento"
         ))
-        print("-" * 70)
+        print("-" * 110)
 
         encontrados = False
         for clave, datos in Reservaciones.items():
             if datos["Fecha"] == fecha:
-                print("{:<10} {:<10} {:<10} {:<12} {:<10} {:<15}".format(
-                    clave, datos["Cliente"], datos["Sala"],
+
+                nombre_Cliente = Clientes.get(datos["Cliente"], [f"ID {datos['Cliente']}"])[0]
+                nombre_Sala = Salas.get(datos["Sala"], [f"ID {datos['Sala']}"])[0]
+                                              
+                print("{:<10} {:<20} {:<20} {:<12} {:<10} {:<15}".format(
+                    clave, nombre_Cliente, nombre_Sala,
                     datos["Fecha"].strftime("%d-%m-%Y"),
                     datos["Turno"], datos.get("Evento", "(sin nombre)")
                 ))
                 encontrados = True
-                print("-"* 26, "Fin del regristro", "-"*25)
-                
+
         if not encontrados:
             print("No hay reservaciones para esa fecha.")
 
     except ValueError:
-        print("Formato incorrecto, use DD-MM-AAAA.") 
+        print("Formato incorrecto, use DD-MM-AAAA.")  
 
 def registrar_cliente(Clientes, clave_clientes):
     """Funcion que registrara a un nuevo cliente"""
@@ -208,7 +237,8 @@ def registrar_cliente(Clientes, clave_clientes):
                 ).lower()
                 if continuar != "s":
                     break
-                continue
+                else:
+                    continue
 
             apellido = pedir_apellidos()
             if apellido is None:
@@ -218,10 +248,12 @@ def registrar_cliente(Clientes, clave_clientes):
                 ).lower()
                 if continuar != "s":
                     break
-                continue
+                else:
+                    continue
 
-            Clientes[clave_clientes] = {"Nombre": nombre_cliente, "Apellido": apellido}
-            print(f"Cliente Agregado Exitosamente con ID {clave_clientes}.")
+            datos_cliente = [nombre_cliente, apellido]
+            Clientes[clave_clientes] = datos_cliente
+            print("Cliente Agregado Exitosamente")
             clave_clientes += 1
 
             continuar = input(
@@ -230,9 +262,8 @@ def registrar_cliente(Clientes, clave_clientes):
             if continuar != "s":
                 break
 
-        except Exception as e:
-            print(f"Ocurrio un error inesperado: {e}.")
-            break
+        except ValueError:
+            print("Ocurrio un error inesperado.")
     return Clientes, clave_clientes
 
 
@@ -249,7 +280,8 @@ def registrar_sala(Salas, clave_salas):
                 ).lower()
                 if continuar != "s":
                     break
-                continue
+                else:
+                    continue
 
             cupo_sala = pedir_cupo()
             if cupo_sala is None:
@@ -259,10 +291,12 @@ def registrar_sala(Salas, clave_salas):
                 ).lower()
                 if continuar != "s":
                     break
-                continue
+                else:
+                    continue
 
-            Salas[clave_salas] = {"Nombre": nombre_sala, "Cupo": cupo_sala}
-            print(f"Sala agregada exitosamente con ID {clave_salas}.")
+            datos_salas = [nombre_sala, cupo_sala]
+            Salas[clave_salas] = datos_salas
+            print("Sala agregada exitosamente.")
             clave_salas += 1
 
             continuar = input(
@@ -270,9 +304,8 @@ def registrar_sala(Salas, clave_salas):
             ).lower()
             if continuar != "s":
                 break
-        except Exception as e:
-            print(f"Ocurrio un error inesperado: {e}")
-            break
+        except ValueError:
+            print("Ocurrio un error inesperado.")
     return Salas, clave_salas
 
 
@@ -288,10 +321,12 @@ def main(
         print("4. Registrar nuevo cliente.")
         print("5. Registrar nueva sala.")
         print("6. Salir.\n")
-        opcion = input("Selecciona la opcion que necesites (1-6): ").strip()
+        opcion = input("Selecciona la opcion que necesites (1-6): ")
         if opcion.isdigit():
             if opcion == "1":
-                registrar_reservacion()
+                Reservaciones, clave_reservaciones = registrar_reservacion(
+                    Reservaciones, clave_reservaciones, Clientes, Salas
+                )
             elif opcion == "2":
                 editar_reservacion()
             elif opcion == "3":
@@ -301,11 +336,12 @@ def main(
             elif opcion == "5":
                 Salas, clave_salas = registrar_sala(Salas, clave_salas)
             elif opcion == "6":
+                print("Saliendo...")
                 break
             else:
-                print("ERROR, INGRESA UNA OPCION VALIDA (1-6).")
+                print("ERROR, INGRESA UNA OPCION VALIDA")
         else:
-            print("ERROR, INGRESA UNA OPCION VALIDA (1-6).")
+            print("ERROR, INGRESA UNA OPCION VALIDA")
     return (
         Reservaciones,
         clave_reservaciones,
@@ -332,10 +368,11 @@ if __name__ == "__main__":
         Clientes,
         clave_clientes,
         Salas,
-        clave_salas,
+        clave_salas
     ) = main(
         Reservaciones, clave_reservaciones, Clientes, clave_clientes, Salas, clave_salas
     )
+
 
 
 
