@@ -119,11 +119,81 @@ try:
 
 def editar_reservacion():
     """Funcion que editara el nombre de la reservacion seleccionada por un rango de fechas"""
+    if not Reservaciones:
+        print("No existen reservaciones registradas.")
+        return Reservaciones
 
+    try:
+        fecha_inicio_str = input("Ingresa la fecha de inicio: ")
+        fecha_fin_str = input("Ingresa la fecha de fin:  ")
+
+        fecha_inicio_str = datetime.datetime.strptime(fecha_inicio_str, "%d-%m-%Y").date()
+        fecha_fin_str = datetime.datetime.strptime(fecha_fin_str, "%d-%m-%Y").date()
+
+        print("\nReservaciones en el rango dado: ")
+        encontrados = []
+        for clave, datos in Reservaciones.items():
+            if fecha_fin_str <= datos["Fecha"] <= fecha_fin_str:
+                print(f"Clave: {clave} | Cliente: {datos['Cliente']} | "
+                      f"Sala: {datos['Sala']} | Fecha: {datos['Fecha']} | "
+                      f"Turno: {datos['Turno']} | Evento: {datos.get('Evento','(sin nombre)')}")
+                encontrados.append(clave)
+
+        if not encontrados:
+            print("No se encontraron reservaciones en ese rango.")
+            return Reservaciones
+        
+        while True:
+            try:
+                clave_edit = int(input("Ingrese la clave de la reservación que desea editar: "))
+                if clave_edit not in encontrados:
+                    print("Clave inválida, intente de nuevo.")
+                    continue
+                break
+            except ValueError:
+                print("Debe ingresar un número válido.")
+
+        nuevo_nombre = input("Ingrese el nuevo nombre del evento: ")
+        Reservaciones[clave_edit]["Evento"] = nuevo_nombre
+        print("Nombre del evento actualizado con éxito.")
+
+    except ValueError:
+        print("Error en el formato de fechas, use DD-MM-AAAA.")
+
+    return Reservaciones
 
 def consultar_reservacion():
     """Funcion que consultara las reservaciones existentes para una fecha especifica"""
+    if not Reservaciones:
+        print("No existen reservaciones registradas.")
+        return
 
+    try:
+        fecha_str = input("Ingrese la fecha a consultar (DD-MM-AAAA): ")
+        fecha = datetime.datetime.strptime(fecha_str, "%d-%m-%Y").date()
+
+        print(f"\nReservaciones para la fecha {fecha}:")
+        print("{:<10} {:<10} {:<10} {:<12} {:<10} {:<15}".format(
+            "Clave", "Cliente", "Sala", "Fecha", "Turno", "Evento"
+        ))
+        print("-" * 70)
+
+        encontrados = False
+        for clave, datos in Reservaciones.items():
+            if datos["Fecha"] == fecha:
+                print("{:<10} {:<10} {:<10} {:<12} {:<10} {:<15}".format(
+                    clave, datos["Cliente"], datos["Sala"],
+                    datos["Fecha"].strftime("%d-%m-%Y"),
+                    datos["Turno"], datos.get("Evento", "(sin nombre)")
+                ))
+                encontrados = True
+                print("-"* 26, "Fin del regristro", "-"*25)
+                
+        if not encontrados:
+            print("No hay reservaciones para esa fecha.")
+
+    except ValueError:
+        print("Formato incorrecto, use DD-MM-AAAA.") 
 
 def registrar_cliente(Clientes, clave_clientes):
     """Funcion que registrara a un nuevo cliente"""
@@ -266,6 +336,7 @@ if __name__ == "__main__":
     ) = main(
         Reservaciones, clave_reservaciones, Clientes, clave_clientes, Salas, clave_salas
     )
+
 
 
 
