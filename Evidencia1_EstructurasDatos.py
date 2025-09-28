@@ -8,7 +8,7 @@ def pedir_nombres():
             return None
         if nombre.replace(" ", "").isalpha():
             return nombre
-        print("ERROR, INGRESA EL NOMBRE CORRECTAMENTE. SOLO LETRAS.")
+        print("Error, ingresa el nombre correctamente. Solo letras.")
 
 
 def pedir_apellidos():
@@ -19,7 +19,7 @@ def pedir_apellidos():
             return None
         if apellido.replace(" ", "").isalpha():
             return apellido
-        print("ERROR, INGRESA EL APELLIDO CORRECTAMENTE. SOLO LETRAS.")
+        print("Error, Ingresa el apellido correctamente. Solo letras.")
 
 
 def pedir_cupo():
@@ -30,27 +30,25 @@ def pedir_cupo():
             return None
         if cupo.isdigit():
             return cupo
-        print("ERROR, INGRESA EL TELEFONO CORRECTAMENTE. SOLO NUMEROS.")
+        print("Error, Ingresa el número correctamente. Solo números.")
 
 
-#yo el master meiker:
 def registrar_reservacion(Reservaciones, clave_reservaciones, Clientes, Salas):
     """Funcion que registrara una nueva reservacion en alguna sala disponible"""
     try:
             if not Clientes:
-                print("Primero debe registrar clientes.")
+                print("Primero debe registrar un cliente.")
                 return Reservaciones, clave_reservaciones
             if not Salas:
-                print("Primero debe registrar salas.")
+                print("Primero debe registrar una sala.")
                 return Reservaciones, clave_reservaciones
             
-            #clientes
-            print("\nClientes Registrados:")
+            print("\nClientes Registrados: ")
             for ID_Cliente, datos in Clientes.items():
                 print(f"{ID_Cliente}. {datos[0]} {datos[1]}")
 
             while True:
-                Entrada = input("Ingrese la Clave del Cliente [ENTER para cancelar]:").strip()
+                Entrada = input("Ingrese la Clave del Cliente [ENTER para cancelar]: ").strip()
                 if Entrada == "":
                     print("Operacion Cancelada...")
                     return Reservaciones, clave_reservaciones
@@ -64,13 +62,9 @@ def registrar_reservacion(Reservaciones, clave_reservaciones, Clientes, Salas):
                     print("Cliente no encontrado. Intente de nuevo")
                     continue
                 break
-            #pruebas de valores
+           
 
-
-
-
-            #Salas
-            print("\nSalas Registradas:")
+            print("\nSalas Registradas: ")
             for ID_Salas, datos in Salas.items():
                 print(f"{ID_Salas}. {datos[0]} (Cupo: {datos[1]})")
 
@@ -89,8 +83,8 @@ def registrar_reservacion(Reservaciones, clave_reservaciones, Clientes, Salas):
                     print("Debe ingresar un Numero valido")
 
             
-            #fechas
-            Fecha_STR = input("Ingrese la Fecha del evento: (DD-MM-AAAA)")
+            
+            Fecha_STR = input("Ingrese la Fecha del evento (DD-MM-AAAA): ")
             try:
                 Hoy = datetime.date.today()
                 FechaEvento = datetime.datetime.strptime(Fecha_STR, "%d-%m-%Y").date()
@@ -108,22 +102,22 @@ def registrar_reservacion(Reservaciones, clave_reservaciones, Clientes, Salas):
                 print("Turno invalido")
                 return Reservaciones, clave_reservaciones
             
-            #Name???
+           
             while True:
                 NombreEvento = input("Ingrese el Nombre de su Evento: ").strip()
                 if NombreEvento == "":
-                    print("Este registro no se puede quedar en Blanco, vuelva a intentarlo.")
+                    print("Este registro no se puede quedar en blanco, vuelva a intentarlo.")
                     continue
                 else:
                     break
 
-            #Validar que no se sobrepongan las fechas...
+            
             for Reserva in Reservaciones.values():
                 if Reserva["Sala"] == ID_Salas and Reserva["Fecha"] == FechaEvento and Reserva["Turno"] == Turno:
                     print("Esta Sala ya esta reservada en esta Fecha y Turno")
                     return Reservaciones, clave_reservaciones
             
-            #checar
+            
             Reservaciones[clave_reservaciones] = {
                 "Cliente": ID_Cliente,
                 "Sala": ID_Salas,
@@ -141,8 +135,6 @@ def registrar_reservacion(Reservaciones, clave_reservaciones, Clientes, Salas):
 
 
 
-
-#gabs
 def editar_reservacion():
     """Funcion que editara el nombre de la reservacion seleccionada por un rango de fechas"""
     if not Reservaciones:
@@ -187,7 +179,7 @@ def editar_reservacion():
         print("Error en el formato de fechas, use DD-MM-AAAA.")
 
     return Reservaciones
-#gabs
+
 def consultar_reservacion():
     """Funcion que consultara las reservaciones existentes para una fecha especifica"""
     if not Reservaciones:
@@ -228,7 +220,7 @@ def registrar_cliente(Clientes, clave_clientes):
     """Funcion que registrara a un nuevo cliente"""
     while True:
         try:
-            print("Ingresa los datos del cliente:")
+            print("Ingresa los datos del cliente: ")
             nombre_cliente = pedir_nombres()
             if nombre_cliente is None:
                 print("Registro cancelado.")
@@ -271,7 +263,7 @@ def registrar_sala(Salas, clave_salas):
     """Funcion que registrara una nueva sala"""
     while True:
         try:
-            print("Ingresa los datos de la sala:")
+            print("Ingresa los datos de la sala: ")
             nombre_sala = pedir_nombres()
             if nombre_sala is None:
                 print("Registro cancelado.")
@@ -339,9 +331,9 @@ def main(
                 print("Saliendo...")
                 break
             else:
-                print("ERROR, INGRESA UNA OPCION VALIDA")
+                print("Error, una opción valida")
         else:
-            print("ERROR, INGRESA UNA OPCION VALIDA")
+            print("Error, una opción valida")
     return (
         Reservaciones,
         clave_reservaciones,
@@ -372,8 +364,3 @@ if __name__ == "__main__":
     ) = main(
         Reservaciones, clave_reservaciones, Clientes, clave_clientes, Salas, clave_salas
     )
-
-
-
-
-
